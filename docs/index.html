@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bloom Profile Builder SDK · interactive playground</title>
+<meta name="description" content="Interactive playground for @ai-native-solutions/bloom-profile-builder-sdk — walk the 21-probe calibration, watch the bloom vector fill, see F(S⃗) update live, all in your browser.">
+<meta name="theme-color" content="#1a1a1e">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231a1a1e'/%3E%3Ctext x='16' y='22' font-family='serif' font-size='18' fill='%237a9c7e' text-anchor='middle'%3E%E2%97%8A%3C/text%3E%3C/svg%3E">
+<style>
+:root{--void:#1a1a1e;--deep:#212127;--surface:#2a2a30;--raised:#33333a;--line:rgba(232,228,219,0.08);--line2:rgba(232,228,219,0.16);--text:#e8e4db;--muted:#928d80;--dim:#6b6660;--sage:#7a9c7e;--sage-dim:rgba(122,156,126,0.14);--amber:#d4a052;--amber-dim:rgba(212,160,82,0.12);--coral:#d67a5a;--serif:'Cormorant Garamond',Georgia,serif;--sans:-apple-system,system-ui,sans-serif;--mono:'JetBrains Mono','IBM Plex Mono',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--void);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.6;min-height:100vh}
+button{font-family:inherit;cursor:pointer;border:none;outline:none;color:inherit}
+input,textarea{font-family:inherit;background:transparent;color:var(--text);border:none;outline:none;width:100%}
+textarea{resize:vertical}
+h1,h2,h3{font-family:var(--serif);font-weight:400;color:var(--text);line-height:1.2}
+h1{font-size:36px;margin-bottom:6px}
+h1 em{color:var(--sage);font-style:italic}
+h2{font-size:22px;margin-bottom:10px}
+h2 em{color:var(--sage);font-style:italic}
+h3{font-size:11px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.14em;font-family:var(--mono);font-weight:500}
+header{background:rgba(26,26,30,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:22px}
+.brand .glyph{color:var(--sage)}
+.brand .co{color:var(--dim);font-family:var(--mono);font-size:9.5px;letter-spacing:0.16em;margin-left:6px;text-transform:uppercase}
+header a{color:var(--muted);text-decoration:none;font-family:var(--mono);font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;padding:8px 14px;border:1px solid var(--line2);border-radius:8px}
+header a:hover{color:var(--sage);border-color:var(--sage)}
+main{padding:32px 24px;max-width:1080px;margin:0 auto}
+.intro{margin-bottom:22px}
+.intro p{color:var(--muted);max-width:640px}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;align-items:start}
+@media(max-width:820px){.grid{grid-template-columns:1fr}}
+.card{background:var(--deep);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:18px}
+.probe-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;flex-wrap:wrap;gap:12px}
+.axis-tag{font-family:var(--mono);font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--amber);background:var(--amber-dim);padding:5px 10px;border-radius:6px}
+.counter{font-family:var(--mono);font-size:10.5px;color:var(--muted);letter-spacing:0.12em}
+.probe-q{font-family:var(--serif);font-size:24px;line-height:1.35;font-style:italic;color:var(--text);margin:12px 0 14px}
+.probe-q .glyph{color:var(--sage);font-style:normal;margin-right:6px}
+.probe-note{color:var(--muted);font-size:13px;margin-bottom:14px}
+.likert{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+@media(max-width:600px){.likert{grid-template-columns:1fr 1fr}}
+.likert button{background:var(--surface);color:var(--text);border:1px solid var(--line);padding:12px 10px;border-radius:10px;text-align:left;transition:all .15s}
+.likert button:hover{border-color:var(--sage);background:var(--raised)}
+.likert button.on{border-color:var(--sage);background:var(--sage-dim);color:var(--sage)}
+.likert .num{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.14em;display:block;margin-bottom:4px}
+.likert .lab{font-family:var(--serif);font-size:15px;font-style:italic}
+.probe-text{margin-bottom:12px}
+.probe-text textarea{background:var(--surface);padding:10px 12px;border-radius:10px;min-height:64px;font-size:14px;border:1px solid var(--line)}
+.probe-text label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.probe-nav{display:flex;justify-content:space-between;gap:10px;margin-top:8px}
+.probe-nav button{padding:10px 20px;border-radius:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600}
+.probe-nav .next{background:var(--sage);color:var(--void)}
+.probe-nav .next:disabled{opacity:.4;cursor:not-allowed}
+.probe-nav .back{background:transparent;color:var(--muted);border:1px solid var(--line2)}
+.progress{height:3px;background:var(--surface);border-radius:2px;overflow:hidden;margin-bottom:20px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--sage),var(--amber));transition:width .4s}
+.stat{display:flex;justify-content:space-between;align-items:baseline;padding:10px 12px;background:var(--surface);border-radius:8px;font-family:var(--mono);font-size:12px;margin-bottom:6px}
+.stat .k{color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;font-size:10px}
+.stat .v{color:var(--sage);font-weight:500}
+.stat .v.amber{color:var(--amber)}
+.radial{position:relative;width:100%;display:flex;align-items:center;justify-content:center;padding:8px 0}
+.radial svg{width:100%;max-width:340px;height:auto}
+.badge{display:inline-block;padding:5px 11px;background:var(--sage-dim);color:var(--sage);border-radius:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;margin-right:6px}
+.badge.warn{background:rgba(214,122,90,0.14);color:var(--coral)}
+.big-btn{background:var(--sage);color:var(--void);padding:12px 24px;border-radius:10px;font-family:var(--mono);font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;margin-right:6px}
+.big-btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line2)}
+.big-btn.amber{background:var(--amber);color:var(--void)}
+.growth{background:var(--surface);border-left:2px solid var(--amber);padding:14px 18px;border-radius:8px;margin-top:14px;font-family:var(--serif);font-size:16px;font-style:italic;line-height:1.6}
+.fold{font-family:var(--serif);font-size:44px;font-style:italic;color:var(--sage);line-height:1;margin:10px 0}
+.fold small{font-family:var(--mono);font-size:11px;color:var(--muted);font-style:normal;letter-spacing:0.12em;display:block;margin-top:6px}
+.signature{font-family:var(--mono);font-size:14px;color:var(--amber);letter-spacing:0.06em;margin:8px 0;word-break:break-all}
+.footer{margin-top:36px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:0.06em;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.footer a{color:var(--sage);text-decoration:none}
+pre.export{background:var(--void);border:1px solid var(--line);border-radius:8px;padding:12px;margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--sage);white-space:pre-wrap;max-height:220px;overflow:auto}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><span class="glyph">◊</span> Bloom Profile Builder SDK <span class="co">AI-Native Solutions</span></div>
+  <a href="https://github.com/sjgant80-hub/bloom-profile-builder-sdk" target="_blank" rel="noopener">GitHub</a>
+</header>
+<main>
+  <div class="intro">
+    <h1>Interactive <em>playground</em></h1>
+    <p>The full 21-probe calibration of <code>@ai-native-solutions/bloom-profile-builder-sdk</code>, running in your browser. No network, no telemetry. Import the SDK from source and try it live.</p>
+  </div>
+
+  <div class="progress"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+
+  <div class="grid">
+    <div>
+      <div class="card">
+        <div class="probe-head">
+          <span class="axis-tag" id="axisTag">ring · glyph</span>
+          <span class="counter" id="counter">0 / 21</span>
+        </div>
+        <div class="probe-q" id="probeQ"></div>
+        <div class="probe-note" id="probeNote"></div>
+        <div class="likert" id="likert"></div>
+        <div class="probe-text">
+          <label>Optional · say more (feeds the κ classifier)</label>
+          <textarea id="probeText" placeholder="Notice what surfaces. A phrase, a sentence."></textarea>
+        </div>
+        <div class="probe-nav">
+          <button class="back" id="backBtn">← back</button>
+          <button class="next" id="nextBtn" disabled>next →</button>
+        </div>
+      </div>
+      <div class="card" id="resultCard" style="display:none">
+        <h2>Bloom <em>profile</em></h2>
+        <div class="fold" id="foldOut">1<small>F(S⃗) · Ω = 510,510 baseline</small></div>
+        <div class="signature" id="sigOut">∅</div>
+        <div>
+          <span class="badge" id="bandBadge">— band</span>
+          <span class="badge" id="shapeBadge">— shape</span>
+          <span class="badge" id="sumBadge">Σ = 0</span>
+        </div>
+        <div class="growth" id="growthOut">—</div>
+        <div class="radial" id="resultRadial"></div>
+        <div style="margin-top:14px">
+          <button class="big-btn amber" id="downloadBtn">Download JSON</button>
+          <button class="big-btn ghost" id="restartBtn">New calibration</button>
+        </div>
+        <pre class="export" id="jsonExport"></pre>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h3>Live bloom</h3>
+        <div class="radial" id="liveRadial"></div>
+      </div>
+      <div class="card">
+        <h3>Live readings</h3>
+        <div class="stat"><span class="k">F(S⃗)</span><span class="v" id="liveFold">1</span></div>
+        <div class="stat"><span class="k">Ω baseline</span><span class="v">510,510</span></div>
+        <div class="stat"><span class="k">κ band</span><span class="v amber" id="liveBand">—</span></div>
+        <div class="stat"><span class="k">Σ vector</span><span class="v" id="liveSum">0</span></div>
+        <div class="stat"><span class="k">signature</span><span class="v" id="liveSig">∅</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>MIT · © 2026 AI-Native Solutions</span>
+    <span><a href="https://www.npmjs.com/package/@ai-native-solutions/bloom-profile-builder-sdk">npm</a> · <a href="https://github.com/sjgant80-hub/bloom-profile-builder-sdk">github</a></span>
+  </div>
+</main>
+
+<script type="module">
+import {
+  createSession, LIKERT, PROBE_COUNT, radialSVG,
+  exportProfileJSON, VERSION
+} from '../src/index.js';
+
+document.title += ` · v${VERSION}`;
+
+let session = createSession();
+let scratch = { score: null, text: '' };
+
+const $ = (id) => document.getElementById(id);
+const likertEl = $('likert');
+
+function renderProbe() {
+  const p = session.currentProbe();
+  if (!p) return renderResult();
+  $('axisTag').textContent = `ring ${p.ring} · ${p.glyph} · ${p.name}`;
+  $('counter').textContent = `${p.idx + 1} / ${PROBE_COUNT}`;
+  $('probeQ').innerHTML = `<span class="glyph">${p.glyph}</span>${p.q}`;
+  $('probeNote').textContent = p.note;
+  scratch = { score: null, text: '' };
+  likertEl.innerHTML = LIKERT.map(L =>
+    `<button data-v="${L.v}"><span class="num">${L.v}</span><span class="lab">${L.lab}</span></button>`
+  ).join('');
+  likertEl.querySelectorAll('button').forEach(b => b.onclick = () => {
+    scratch.score = +b.dataset.v;
+    likertEl.querySelectorAll('button').forEach(x => x.classList.toggle('on', +x.dataset.v === scratch.score));
+    $('nextBtn').disabled = false;
+  });
+  $('probeText').value = '';
+  $('probeText').oninput = (e) => { scratch.text = e.target.value; renderLive(); };
+  $('nextBtn').disabled = true;
+  $('progFill').style.width = (p.idx / PROBE_COUNT * 100) + '%';
+  renderLive();
+}
+
+function renderLive() {
+  // fold in the current-probe scratch as a preview
+  const preview = session.getState();
+  if (scratch.score != null) {
+    preview.answers[preview.idx] = { score: scratch.score, text: scratch.text };
+    preview.textAll[preview.idx] = scratch.text;
+  }
+  const live = session.live();
+  // Recompute with scratch by borrowing the sdk's liveReadings via a mini roll
+  // (we can just re-call live after temporarily mutating internal state)
+  if (scratch.score != null) {
+    // Reuse the SDK function via importing indirectly through session.getState is not exposed.
+    // Simpler: manually accumulate a preview using currentProbe idx.
+  }
+  $('liveFold').textContent = live.foldNumber.toLocaleString();
+  $('liveSum').textContent = live.stateSum;
+  $('liveSig').textContent = live.signature;
+  $('liveBand').textContent = live.band ? `${live.band.glyph} ${live.band.name}` : '—';
+  $('liveRadial').innerHTML = radialSVG(live.bloom, 300);
+}
+
+$('nextBtn').onclick = () => {
+  if (scratch.score == null) return;
+  const step = session.answer({ score: scratch.score, text: scratch.text });
+  if (step.done) renderResult();
+  else renderProbe();
+};
+
+$('backBtn').onclick = () => {
+  session.back();
+  renderProbe();
+};
+
+function renderResult() {
+  const p = session.end();
+  $('resultCard').style.display = 'block';
+  $('foldOut').innerHTML = `${p.foldNumber.toLocaleString()}<small>F(S⃗) · Ω = 510,510 baseline</small>`;
+  $('sigOut').textContent = p.signature;
+  const bandBadge = $('bandBadge');
+  bandBadge.textContent = `${p.dominantBand.glyph} ${p.dominantBand.name}`;
+  bandBadge.className = 'badge' + (p.dominantBand.name === 'collapse' ? ' warn' : '');
+  $('shapeBadge').textContent = `shape · ${p.shape}`;
+  $('sumBadge').textContent = `Σ = ${p.stateSum}`;
+  $('growthOut').textContent = p.growthEdge;
+  $('resultRadial').innerHTML = radialSVG(p.bloom, 340);
+  const json = exportProfileJSON(p);
+  $('jsonExport').textContent = json;
+  $('downloadBtn').onclick = () => {
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `${p.id}.json`; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 200);
+  };
+  $('restartBtn').onclick = () => {
+    session = createSession();
+    scratch = { score: null, text: '' };
+    $('resultCard').style.display = 'none';
+    renderProbe();
+  };
+  $('progFill').style.width = '100%';
+}
+
+renderProbe();
+</script>
+</body>
+</html>
