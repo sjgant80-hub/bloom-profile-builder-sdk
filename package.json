@@ -1,32 +1,16 @@
 {
   "name": "@ai-native-solutions/bloom-profile-builder-sdk",
   "version": "1.0.0",
+  "description": "bloom-profile-builder SDK · sovereign single-file library extracted from bloom-profile-builder/index.html",
   "type": "module",
-  "description": "Sovereign SDK for the Bloom Profile Builder - 7-ring calibration engine, 21 probes, F(S⃗) fold-number fingerprint, κ classifier, radial SVG, IDB persistence.",
-  "main": "./src/index.js",
-  "types": "./src/index.d.ts",
-  "exports": {
-    ".": { "types": "./src/index.d.ts", "import": "./src/index.js" },
-    "./probes":  "./src/probes.js",
-    "./scoring": "./src/scoring.js",
-    "./profile": "./src/profile.js",
-    "./storage": "./src/storage.js"
-  },
-  "files": ["src/", "docs/", "examples/", "README.md", "LICENSE"],
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "files": ["src", "docs", "README.md", "LICENSE"],
   "scripts": {
-    "example": "node examples/quick-start.mjs"
+    "test": "node --test test/",
+    "smoke": "node examples/smoke.js"
   },
-  "keywords": [
-    "bloom-profile-builder",
-    "bloom",
-    "calibration",
-    "foldkit",
-    "sovereign",
-    "estate",
-    "ai-native-solutions",
-    "indexeddb",
-    "private"
-  ],
+  "keywords": ["bloom-profile-builder", "sdk", "sovereign", "ai-native-solutions"],
   "author": "AI-Native Solutions",
   "license": "MIT",
   "repository": {
@@ -34,13 +18,7 @@
     "url": "https://github.com/sjgant80-hub/bloom-profile-builder-sdk.git"
   },
   "homepage": "https://sjgant80-hub.github.io/bloom-profile-builder-sdk/",
-  "bugs": {
-    "url": "https://github.com/sjgant80-hub/bloom-profile-builder-sdk/issues"
-  },
   "publishConfig": {
     "access": "public"
-  },
-  "engines": {
-    "node": ">=18"
   }
 }
